@@ -1,0 +1,11 @@
+* Purpose
+  This code is an attempt at implementing the algorithm presented in the paper Twice Ramujan Sparsifiers in octave.
+  The paper can be found [[https://arxiv.org/pdf/0808.0163.pdf][Right Here]]
+  
+  
+* How to run
+  To run this code simply run the sparseScript.m file. This is a simple script that generates a random graph with user defined parameters. These are
+  - n: number of verices of the orignal graph
+  - pr: Denisity of edges. This should be a number in (0,1) and is the probabality between any two nodes there will be an edge
+  
+As of writing I'm not convinced my code is correct. 
