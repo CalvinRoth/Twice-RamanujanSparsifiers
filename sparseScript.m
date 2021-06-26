@@ -1,7 +1,8 @@
-n = 10;
+n = 25;
 G = zeros(n,n);
 W = zeros(0,1);
-pr = 0.35; %probabality any two nodes are connected
+d = 5;
+pr = 0.33; %probabality any two nodes are connected
 
 
 for i =1:n
@@ -15,20 +16,21 @@ for i =1:n
 endfor
 W = diag(W);
 
-H = graphSparifier(G,W,2);
+H = graphSparifier(G,W,d);
 
-
+tic
 % Plotting 
 angle = 360/20;
 radius = 3;
 
 xy = zeros(n, 2);
+
 for i = 1:n
   xy(i, 1) = radius * cos(angle * i);
   xy(i,2) = radius * sin(angle * i);
 endfor
 gplot(G, xy)
-
+pause 
 m = size(H)(1);
 nedges = 0;
 for i = 1:m
@@ -47,4 +49,6 @@ for i = 1:m
   xy(i, 1) = radius * cos(angle * i);
   xy(i,2) = radius * sin(angle * i);
 endfor
+
 gplot(H, xy)
+toc

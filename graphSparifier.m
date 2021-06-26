@@ -13,7 +13,6 @@ function H = graphSparifier(G, W, d)
   epL = 1/sqrt(d);
   epU = (sqrt(d)-1)/(d + sqrt(d));
   
-  epL - epU
   l = -n/epL;
   u = n/epU; 
   
@@ -26,25 +25,26 @@ function H = graphSparifier(G, W, d)
   
   vert = buildV(G, B, W, n, m);
   s = zeros(m,m);
-  
-  
+  tic
   for i = 1:d*n
-    for j = 1:size(vert)(1)
+    upperT1 = inv(((u+deltU)*eye(n,n) - A));
+    upperT2 = upperT1* upperT1;
+    lowerT1 = inv( A - (l + deltU) * eye(n,n));
+    lowerT2 = lowerT1 ** 2;
+    for j = 1:size(vert)(2)
       v = vert(:, j);
-      augT1 = inv(((u+deltU)*eye(n,n) - A));
-      augT2 = augT1 * augT1;
-      UA = v' * augT2 * v;
+
+      UA = v' * upperT2 * v;
       UA = UA / ( potenUpper(A, u) - potenUpper(A, u + deltU));
-      UA += v' * augT1 * v;
-      
-      augT1 = inv( A - (l + deltU) * eye(n,n));
-      augT2 = augT1 * augT1;
-      LA = v' * augT2 * v;
+      UA += v' * upperT1 * v;
+      UA = real(UA);
+      LA = v' * lowerT2 * v;
       LA = LA / (potenLower(A, l + deltL) - potenLower(A, l));
-      LA -= v' * augT1 * v;
+      LA -= v' * lowerT1 * v;
+      LA = real(LA);
       
       if UA < LA
-        [i,j];
+        [i]
         midpoint = (UA + LA)/2;
         s(j,j) += 1/midpoint;
         A = A + (1/midpoint) * v * v';
@@ -53,11 +53,15 @@ function H = graphSparifier(G, W, d)
         break;
       endif
     endfor
-  endfor
-  
+
+endfor
+toc
+kappa = (d+1+2*sqrt(d))/(d+1-2*sqrt(d))
+eig(vert*s*vert' - vert*vert')
+eigs(kappa*vert*vert'-vert*s*vert')
+"Done with main loop"
+  tic
   Lh = B' * sqrtm(W)* s * sqrtm(W) * B;
-  Lh( ~any(Lh,2), : ) = [];  %rows
-  Lh( :, ~any(Lh,1) ) = [];  %columns
   
   H = Lh
   for i = 1:size(H)(1)
@@ -68,5 +72,5 @@ function H = graphSparifier(G, W, d)
     endfor
   endfor
  
-  
+  toc
 endfunction
